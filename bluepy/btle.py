@@ -484,11 +484,11 @@ if __name__ == '__main__':
             for ch in svc.getCharacteristics():
                 print("    {}, supports {}".format(ch, ch.propertiesToString()))
                 chName = AssignedNumbers.getCommonName(ch.uuid)
-                if (ch.supportsRead()):
-                    try:
-                        print("    ->", repr(ch.read()))
-                    except BTLEException as e:
-                        print("    ->", e)
+                # if (ch.supportsRead()):
+                try:
+                    print("    ->", repr(ch.read()))
+                except BTLEException as e:
+                    print("    ->", e)
 
     finally:
         conn.disconnect()
