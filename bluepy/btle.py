@@ -478,17 +478,26 @@ if __name__ == '__main__':
         addrType = ADDR_TYPE_PUBLIC
     print("Connecting to: {}, address type: {}".format(devAddr, addrType))
     conn = Peripheral(devAddr, addrType)
+    svc = conn.getServiceByUUID("46a970e0-0d5f-11e2-8b5e-0002a5d5c51b")
+    ch = svc.getCharacteristics("0aad7ea0-0d60-11e2-8e3c-0002a5d5c51b")[0]
+    print("    {}, supports {}".format(ch, ch.propertiesToString()))
+    chName = AssignedNumbers.getCommonName(ch.uuid)
     try:
-        for svc in conn.getServices():
-            print(str(svc), ":")
-            for ch in svc.getCharacteristics():
-                print("    {}, supports {}".format(ch, ch.propertiesToString()))
-                chName = AssignedNumbers.getCommonName(ch.uuid)
-                # if (ch.supportsRead()):
-                try:
-                    print("    ->", repr(ch.read()))
-                except BTLEException as e:
-                    print("    ->", e)
+        print("    ->", repr(ch.read()))
+    except BTLEException as e:
+        print("    ->", e)
+
+    # try:
+    #     for svc in conn.getServices():
+    #         print(str(svc), ":")
+    #         for ch in svc.getCharacteristics():
+    #             print("    {}, supports {}".format(ch, ch.propertiesToString()))
+    #             chName = AssignedNumbers.getCommonName(ch.uuid)
+    #             # if (ch.supportsRead()):
+    #             try:
+    #                 print("    ->", repr(ch.read()))
+    #             except BTLEException as e:
+    #                 print("    ->", e)
 
     finally:
         conn.disconnect()
