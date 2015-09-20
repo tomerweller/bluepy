@@ -465,7 +465,7 @@ def get_json_uuid():
 AssignedNumbers = _UUIDNameMap( list(get_json_uuid() ))
 
 class MyDelegate(DefaultDelegate):
-    def __init__(self, params):
+    def __init__(self):
         DefaultDelegate.__init__(self)
         # ... initialise here
 
@@ -486,33 +486,12 @@ if __name__ == '__main__':
         addrType = ADDR_TYPE_PUBLIC
     print("Connecting to: {}, address type: {}".format(devAddr, addrType))
     conn = Peripheral(devAddr, addrType)
+    conn.setDelegate(MyDelegate())
     svc = conn.getServiceByUUID("46a970e0-0d5f-11e2-8b5e-0002a5d5c51b")
     ch = svc.getCharacteristics("0aad7ea0-0d60-11e2-8e3c-0002a5d5c51b")[0]
     print("    {}, supports {}".format(ch, ch.propertiesToString()))
-    ch.write(4)
-
+    ch.write("4")
     while True:
         if conn.waitForNotifications(2.0):
             continue
     print("Done.")
-
-    chName = AssignedNumbers.getCommonName(ch.uuid)
-    try:
-        print("    ->", repr(ch.read()))
-    except BTLEException as e:
-        print("    ->", e)
-
-    # try:
-    #     for svc in conn.getServices():
-    #         print(str(svc), ":")
-    #         for ch in svc.getCharacteristics():
-    #             print("    {}, supports {}".format(ch, ch.propertiesToString()))
-    #             chName = AssignedNumbers.getCommonName(ch.uuid)
-    #             # if (ch.supportsRead()):
-    #             try:
-    #                 print("    ->", repr(ch.read()))
-    #             except BTLEException as e:
-    #                 print("    ->", e)
-
-    finally:
-        conn.disconnect()
