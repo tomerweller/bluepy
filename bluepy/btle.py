@@ -464,6 +464,14 @@ def get_json_uuid():
 
 AssignedNumbers = _UUIDNameMap( list(get_json_uuid() ))
 
+class MyDelegate(DefaultDelegate):
+    def __init__(self, params):
+        DefaultDelegate.__init__(self)
+        # ... initialise here
+
+    def handleNotification(self, cHandle, data):
+        print("got notification: ", cHandle, data)
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         sys.exit("Usage:\n  %s <mac-address> [random]" % sys.argv[0])
@@ -481,6 +489,13 @@ if __name__ == '__main__':
     svc = conn.getServiceByUUID("46a970e0-0d5f-11e2-8b5e-0002a5d5c51b")
     ch = svc.getCharacteristics("0aad7ea0-0d60-11e2-8e3c-0002a5d5c51b")[0]
     print("    {}, supports {}".format(ch, ch.propertiesToString()))
+    ch.write(4)
+
+    while True:
+        if conn.waitForNotifications(2.0):
+            continue
+    print("Done.")
+
     chName = AssignedNumbers.getCommonName(ch.uuid)
     try:
         print("    ->", repr(ch.read()))
